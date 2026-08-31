@@ -1,0 +1,188 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PR Review Agent</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/>
+                </svg>
+            </div>
+            <div class="logo-text">
+                <h1>PR Review</h1>
+                <span class="logo-sub">Agent</span>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <span class="nav-label">MAIN</span>
+            <ul class="nav-links">
+                <li>
+                    <a href="#" onclick="showPage('dashboard')" class="active" id="nav-dashboard">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                        任务看板
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="showPage('new-task')" id="nav-new-task">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                        创建任务
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="nav-section">
+            <span class="nav-label">SYSTEM</span>
+            <ul class="nav-links">
+                <li>
+                    <a href="#" onclick="showPage('config')" id="nav-config">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+                        系统配置
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="version-badge">v2.0</div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="content">
+        <!-- Dashboard -->
+        <div id="page-dashboard" class="page active">
+            <div class="page-header">
+                <div>
+                    <h1>任务看板</h1>
+                    <p class="page-subtitle">管理和追踪代码审查任务</p>
+                </div>
+                <button class="btn btn-primary" onclick="showPage('new-task')">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    新建任务
+                </button>
+            </div>
+            <div id="stats-bar" class="stats-bar"></div>
+            <div id="task-list" class="task-list"></div>
+        </div>
+
+        <!-- New Task -->
+        <div id="page-new-task" class="page">
+            <div class="page-header">
+                <div>
+                    <h1>创建审查任务</h1>
+                    <p class="page-subtitle">配置参数后启动 AI 代码审查</p>
+                </div>
+            </div>
+            <div class="form-container">
+                <form id="task-form" onsubmit="createTask(event)">
+                    <div class="form-section">
+                        <h3 class="form-section-title">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+                            仓库信息
+                        </h3>
+                        <div class="form-group">
+                            <label>选择代码仓库 <span class="required">*</span></label>
+                            <input type="hidden" id="repo-path" required>
+                            <div id="file-browser" class="file-browser" style="max-height:180px"></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>基准提交 <span style="font-weight:400;color:var(--text-muted);font-size:11px">(较早版本)</span></label>
+                                <select id="base-commit" class="input"><option value="HEAD~1">请先选择仓库</option></select>
+                            </div>
+                            <div class="form-group">
+                                <label>目标提交 <span style="font-weight:400;color:var(--text-muted);font-size:11px">(最新版本)</span></label>
+                                <select id="target-commit" class="input"><option value="HEAD">请先选择仓库</option></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>PR 描述</label>
+                            <textarea id="pr-desc" rows="3" class="input" placeholder="描述本次变更的目的和内容..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3 class="form-section-title">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9c.26.46.8.77 1.51 1H21a2 2 0 010 4h-.09c-.71.07-1.25.38-1.51 1z"/></svg>
+                            审查配置
+                        </h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>审查模式</label>
+                                <select id="flow-mode" class="input">
+                                    <option value="simple">简单模式（离线快速）</option>
+                                    <option value="council">委员会模式（多角色评审）</option>
+                                    <option value="debate" selected>辩论模式（推荐）</option>
+                                    <option value="agentic">代理模式（高级深度）</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>最大辩论轮次</label>
+                                <input type="number" id="max-rounds" value="3" min="1" max="10" class="input">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="rag-enabled" checked>
+                                <span class="checkmark"></span>
+                                启用 RAG 知识库（推荐）
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3 class="form-section-title">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                            审查说明
+                        </h3>
+                        <div class="tips-grid">
+                            <div class="tip-card"><div class="tip-icon" style="color:var(--p0)">!!</div><div class="tip-title">P0 严重</div><div class="tip-desc">安全漏洞、数据泄露、服务崩溃</div></div>
+                            <div class="tip-card"><div class="tip-icon" style="color:var(--p1)">!</div><div class="tip-title">P1 高优</div><div class="tip-desc">逻辑错误、性能问题、并发风险</div></div>
+                            <div class="tip-card"><div class="tip-icon" style="color:var(--p2)">~</div><div class="tip-title">P2 中等</div><div class="tip-desc">代码规范、可维护性、最佳实践</div></div>
+                            <div class="tip-card"><div class="tip-icon" style="color:var(--p3)">i</div><div class="tip-title">P3 低优</div><div class="tip-desc">格式、命名、注释等风格建议</div></div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-ghost" onclick="showPage('dashboard')">取消</button>
+                        <button type="submit" class="btn btn-primary">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                            开始审查
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Task Detail -->
+        <div id="page-task-detail" class="page">
+            <div id="task-detail-content"></div>
+        </div>
+
+        <!-- Config -->
+        <div id="page-config" class="page">
+            <div class="page-header">
+                <div>
+                    <h1>系统配置</h1>
+                    <p class="page-subtitle">查看当前系统运行状态和配置</p>
+                </div>
+            </div>
+            <div id="config-content"></div>
+        </div>
+    </main>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

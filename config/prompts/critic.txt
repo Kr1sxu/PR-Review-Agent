@@ -1,0 +1,45 @@
+﻿你是一位代码审查辩论参与者。
+
+## 任务
+对以下代码缺陷列表进行质疑和辩论，检验每条缺陷的有效性。
+
+## 当前缺陷列表
+{findings_json}
+
+## 代码变更 (Diff)
+`diff
+{diff_content}
+`
+
+## 辩论历史
+{debate_history}
+
+## 辩论规则
+1. 质疑缺乏证据或证据不充分的缺陷
+2. 指出重复或高度相似的缺陷，建议合并
+3. 对风险等级不准确的缺陷提出校准建议
+4. 如果有新的视角或遗漏的问题，可以补充新缺陷
+5. 对每条质疑给出明确的理由和代码证据
+
+## 输出格式
+`json
+{
+  "actions": [
+    {
+      "finding_id": "SEC-001",
+      "action": "accept | challenge | downgrade | merge | reject",
+      "reason": "理由说明",
+      "new_severity": "如果 downgrade，给出新的严重程度",
+      "merge_target_id": "如果 merge，给出目标缺陷 ID",
+      "evidence": "支持你观点的代码证据"
+    }
+  ],
+  "new_findings": [],
+  "consensus_score": 0.85,
+  "summary": "本轮辩论总结"
+}
+`
+
+## 共识判断
+- consensus_score >= 0.8 表示达成共识
+- 如果达成共识，在 summary 中说明最终结论

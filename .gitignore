@@ -1,0 +1,33 @@
+# 环境变量（包含密钥，禁止提交）
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.class
+*.egg-info/
+dist/
+build/
+*.egg
+
+# 虚拟环境
+venv/
+.venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 输出文件（运行时生成）
+output/
+*.log
+
+# OS 文件
+.DS_Store
+Thumbs.db
+
+# Docker
+pgdata/

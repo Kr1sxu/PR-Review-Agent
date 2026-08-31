@@ -1,0 +1,17 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: pr-review-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: pr_review
+      POSTGRES_USER: pr_review
+      POSTGRES_PASSWORD: pr_review_2026
+    ports:
+      - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  pgdata:

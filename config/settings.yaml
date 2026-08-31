@@ -1,0 +1,81 @@
+# PR-Review Agent v2
+
+model:
+  # Strong: DeepSeek V4 Flash
+  strong:
+    api_url: "${STRONG_API_URL}"
+    api_key: "${STRONG_API_KEY}"
+    model_name: "${STRONG_MODEL_NAME}"
+    max_tokens: 4096
+    temperature: 0.3
+    timeout: 180
+    max_retries: 3
+    retry_interval: 2
+
+  # Medium: GLM-5.2
+  medium:
+    api_url: "${MEDIUM_API_URL}"
+    api_key: "${MEDIUM_API_KEY}"
+    model_name: "${MEDIUM_MODEL_NAME}"
+    max_tokens: 4096
+    temperature: 0.3
+    timeout: 180
+    max_retries: 3
+    retry_interval: 2
+
+  # Light: MiMo V2.5 Pro
+  light:
+    api_url: "${LIGHT_API_URL}"
+    api_key: "${LIGHT_API_KEY}"
+    model_name: "${LIGHT_MODEL_NAME}"
+    max_tokens: 4096
+    temperature: 0.3
+    timeout: 180
+    max_retries: 3
+    retry_interval: 2
+
+  # Embedding: text-embedding-v4
+  embedding:
+    api_url: "${EMBEDDING_API_URL}"
+    api_key: "${EMBEDDING_API_KEY}"
+    dimensions: 1024
+    timeout: 30
+    batch_size: 10
+
+agents:
+  reviewer_roles:
+    - name: security_expert
+    - name: logic_reviewer
+    - name: test_engineer
+    - name: maintainability_reviewer
+    - name: compliance_checker
+
+flow:
+  default_mode: debate
+  rag_enabled: true
+
+rag:
+  chunk_size: 512
+  chunk_overlap: 64
+  top_k: 5
+  similarity_threshold: 0.7
+  knowledge_base_path: ./knowledge_base
+
+scheduler:
+  max_concurrent_tasks: 3
+  task_timeout: 600
+  data_path: ./output/tasks
+
+web:
+  host: 127.0.0.1
+  port: 8000
+
+database:
+  host: 127.0.0.1
+  port: 5432
+  name: pr_review
+  user: pr_review
+  password: pr_review_2026
+  min_pool_size: 2
+  max_pool_size: 10
+  command_timeout: 30
